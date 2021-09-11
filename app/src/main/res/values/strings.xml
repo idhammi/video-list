@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Video List</string>
+    <string name="label_feed">Feed</string>
+    <string name="label_insert_url">Insert URL</string>
+    <string name="action_post">Post</string>
+    <string name="action_add_post">Add Post</string>
+    <string name="action_close">Close</string>
+    <string name="action_add_more_url">Add more URL</string>
+    <string name="action_post_all_url">Post all URL</string>
+    <string name="action_paste_from_clipboard">Paste from clipboard</string>
+    <string name="info_nothing_to_show">Nothing to show</string>
+    <string name="hint_insert_url">Insert url here or</string>
+</resources>

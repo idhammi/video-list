@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_border"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/_8sdp"
+        android:background="@drawable/bg_border_grey_8dp"
+        android:importantForAccessibility="no"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/et_insert_url"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="@dimen/_14sdp"
+        android:layout_marginStart="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_8sdp"
+        android:background="@null"
+        android:hint="@string/hint_insert_url"
+        android:inputType="textUri"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_border"
+        app:layout_constraintEnd_toStartOf="@id/btn_paste"
+        app:layout_constraintStart_toStartOf="@id/iv_border"
+        app:layout_constraintTop_toTopOf="@id/iv_border" />
+
+    <Button
+        android:id="@+id/btn_paste"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_8sdp"
+        android:backgroundTint="@color/grey"
+        android:maxLines="1"
+        android:text="@string/action_paste_from_clipboard"
+        android:textAllCaps="false"
+        android:textSize="12sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@id/iv_border"
+        app:layout_constraintEnd_toEndOf="@id/iv_border"
+        app:layout_constraintStart_toEndOf="@id/et_insert_url"
+        app:layout_constraintTop_toTopOf="@id/iv_border" />
+
+    <ImageButton
+        android:id="@+id/btn_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_circle_red"
+        android:contentDescription="@string/action_close"
+        android:padding="@dimen/_2sdp"
+        android:src="@drawable/ic_baseline_close_16"
+        app:layout_constraintBottom_toTopOf="@id/iv_border"
+        app:layout_constraintEnd_toEndOf="@id/iv_border"
+        app:layout_constraintStart_toEndOf="@id/iv_border"
+        app:layout_constraintTop_toTopOf="@id/iv_border"
+        app:tint="@color/white" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
