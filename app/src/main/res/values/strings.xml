@@ -10,4 +10,12 @@
     <string name="action_paste_from_clipboard">Paste from clipboard</string>
     <string name="info_nothing_to_show">Nothing to show</string>
     <string name="hint_insert_url">Insert url here or</string>
+    <string name="download_start_error">Failed to start download</string>
+    <string name="exo_download_queued">Download in queue</string>
+    <string name="exo_download_stopped">Download stopped</string>
+    <string name="exo_download_restarting">Download restarting</string>
+    <string name="downloading_video">Downloading video…</string>
+    <string name="downloading_image">Downloading image…</string>
+    <string name="loading_video">Loading video…</string>
+    <string name="loading_image">Loading image…</string>
 </resources>

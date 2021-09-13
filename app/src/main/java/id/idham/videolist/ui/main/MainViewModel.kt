@@ -1,19 +1,37 @@
 package id.idham.videolist.ui.main
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import id.idham.videolist.data.ItemUrl
+import id.idham.videolist.data.ItemUrlDao
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-class MainViewModel : ViewModel() {
+class MainViewModel(private val itemUrlDao: ItemUrlDao) : ViewModel() {
 
     private val _listUrl = MutableLiveData<List<ItemUrl>>()
     val listUrl: LiveData<List<ItemUrl>>
         get() = _listUrl
 
+    val allItems = itemUrlDao.getItems().asLiveData()
+
+    var isItemsAvailable = MutableLiveData(false)
+
     init {
         addMoreUrl(ItemUrl(Random.nextInt(), ""))
+    }
+
+    fun postUrl() {
+        val list = _listUrl.value
+        list?.let { newList ->
+            val addedList = arrayListOf<ItemUrl>()
+            for (item in newList) {
+                if (item.url.isNotEmpty()) addedList.add(ItemUrl(url = item.url))
+            }
+            viewModelScope.launch {
+                itemUrlDao.insert(addedList)
+            }
+        }
+        clearUrl()
     }
 
     fun addMoreUrl(itemUrl: ItemUrl) {
@@ -55,4 +73,14 @@ class MainViewModel : ViewModel() {
         }
     }
 
+}
+
+class MainViewModelFactory(private val itemUrlDao: ItemUrlDao) : ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return MainViewModel(itemUrlDao) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
 }

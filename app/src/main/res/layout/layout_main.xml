@@ -1,49 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.main.MainActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_feed"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clipToPadding="false"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:itemCount="3"
-        tools:listitem="@layout/item_feed" />
+    <data>
 
-    <ImageView
-        android:id="@+id/iv_cactus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/info_nothing_to_show"
-        android:src="@drawable/ic_cactus"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/tv_nothing"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        <import type="android.view.View" />
 
-    <TextView
-        android:id="@+id/tv_nothing"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:layout_marginBottom="@dimen/_36sdp"
-        android:text="@string/info_nothing_to_show"
-        android:textSize="16sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_cactus" />
+        <variable
+            name="viewModel"
+            type="id.idham.videolist.ui.main.MainViewModel" />
+    </data>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="?attr/actionBarSize"
+        tools:context=".ui.main.MainActivity">
+
+        <id.idham.videolist.ui.custom.VideoRecyclerView
+            android:id="@+id/rv_feed"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/_100sdp"
+            android:visibility="@{viewModel.isItemsAvailable ? View.VISIBLE : View.GONE, default = gone}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <ImageView
+            android:id="@+id/iv_cactus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/info_nothing_to_show"
+            android:src="@drawable/ic_cactus"
+            android:visibility="@{viewModel.isItemsAvailable ? View.GONE : View.VISIBLE, default = visible}"
+            app:layout_constraintBottom_toTopOf="@id/tv_nothing"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/tv_nothing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_36sdp"
+            android:text="@string/info_nothing_to_show"
+            android:textSize="16sp"
+            android:visibility="@{viewModel.isItemsAvailable ? View.GONE : View.VISIBLE, default = visible}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_cactus" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

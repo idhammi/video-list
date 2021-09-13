@@ -4,17 +4,18 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
+import id.idham.videolist.MyApp
 import id.idham.videolist.R
 import id.idham.videolist.data.ItemUrl
 import id.idham.videolist.databinding.DialogAddPostBinding
 import id.idham.videolist.ui.main.MainViewModel
+import id.idham.videolist.ui.main.MainViewModelFactory
 import id.idham.videolist.utils.gone
 import id.idham.videolist.utils.visible
 import kotlin.random.Random
@@ -25,7 +26,9 @@ class AddPostDialogFragment : DialogFragment(), AddPostInterface {
         const val TAG = "AddPostDialog"
     }
 
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by activityViewModels {
+        MainViewModelFactory((activity?.application as MyApp).database.itemUrlDao())
+    }
 
     private lateinit var binding: DialogAddPostBinding
     private lateinit var adapter: AddPostAdapter
@@ -48,8 +51,6 @@ class AddPostDialogFragment : DialogFragment(), AddPostInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
-
         binding.btnClose.setOnClickListener {
             viewModel.clearUrl()
             dismiss()
@@ -58,13 +59,8 @@ class AddPostDialogFragment : DialogFragment(), AddPostInterface {
             viewModel.addMoreUrl(ItemUrl(Random.nextInt(), ""))
         }
         binding.btnPostAllUrl.setOnClickListener {
-            val list = viewModel.listUrl.value
-            Log.d("POST", "${list?.size}\n")
-            list?.let {
-                for (item in list) {
-                    Log.d("POST", "$item\n")
-                }
-            }
+            viewModel.postUrl()
+            dismiss()
         }
 
         adapter = AddPostAdapter(this)

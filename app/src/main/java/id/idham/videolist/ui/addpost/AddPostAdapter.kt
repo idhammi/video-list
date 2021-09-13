@@ -2,7 +2,6 @@ package id.idham.videolist.ui.addpost
 
 import android.content.ClipboardManager
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
@@ -75,12 +74,4 @@ class AddPostAdapter(private val postInterface: AddPostInterface) :
         holder.bind(item, itemCount)
     }
 
-    override fun onCurrentListChanged(
-        previousList: MutableList<ItemUrl>,
-        currentList: MutableList<ItemUrl>
-    ) {
-        super.onCurrentListChanged(previousList, currentList)
-
-
-    }
 }
