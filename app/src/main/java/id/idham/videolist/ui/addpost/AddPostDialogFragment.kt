@@ -1,5 +1,6 @@
 package id.idham.videolist.ui.addpost
 
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -41,7 +42,6 @@ class AddPostDialogFragment : DialogFragment(), AddPostInterface {
         if (dialog != null && dialog?.window != null) {
             dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
-            dialog?.setCancelable(false)
         }
         val dialogBinding = DialogAddPostBinding.inflate(inflater, container, false)
         binding = dialogBinding
@@ -52,7 +52,6 @@ class AddPostDialogFragment : DialogFragment(), AddPostInterface {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnClose.setOnClickListener {
-            viewModel.clearUrl()
             dismiss()
         }
         binding.btnAddMoreUrl.setOnClickListener {
@@ -94,6 +93,16 @@ class AddPostDialogFragment : DialogFragment(), AddPostInterface {
         val sizeInPixel = resources.getDimensionPixelSize(R.dimen._28sdp)
 
         dialog?.window?.setLayout(width - sizeInPixel, ViewGroup.LayoutParams.WRAP_CONTENT)
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        viewModel.clearUrl()
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        viewModel.clearUrl()
     }
 
     override fun onItemRemoved(itemUrl: ItemUrl) {

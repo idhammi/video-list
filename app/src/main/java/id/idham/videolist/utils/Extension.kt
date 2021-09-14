@@ -1,6 +1,8 @@
 package id.idham.videolist.utils
 
+import android.content.Context
 import android.view.View
+import android.widget.Toast
 import com.google.android.exoplayer2.util.MimeTypes
 
 fun View.visible() {
@@ -16,7 +18,11 @@ fun View.invisible() {
 }
 
 fun String.getMimeType(): String {
-    val format = this.substringAfterLast(".")
+    val format = this.trim().substringAfterLast(".")
     if (format == "mp4") return MimeTypes.APPLICATION_MP4
     return MimeTypes.VIDEO_UNKNOWN
+}
+
+fun Context.showToast(text: String) {
+    Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
 }

@@ -25,11 +25,11 @@ import id.idham.videolist.utils.getMimeType
 import id.idham.videolist.utils.gone
 import id.idham.videolist.utils.visible
 
-interface NewItem {
-    fun onNewItemInsert(inserted: Boolean)
+interface ItemListener {
+    fun onItemLoadFailed(itemUrl: ItemUrl)
 }
 
-class VideoRecyclerAdapter(private val listener: NewItem) :
+class VideoRecyclerAdapter(private val listener: ItemListener) :
     ListAdapter<ItemUrl, VideoRecyclerAdapter.VideoViewHolder>(DiffCallback) {
 
     companion object DiffCallback : DiffUtil.ItemCallback<ItemUrl>() {
@@ -42,21 +42,13 @@ class VideoRecyclerAdapter(private val listener: NewItem) :
         }
     }
 
-    override fun onCurrentListChanged(
-        previousList: MutableList<ItemUrl>,
-        currentList: MutableList<ItemUrl>
-    ) {
-        super.onCurrentListChanged(previousList, currentList)
-        listener.onNewItemInsert(true)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoViewHolder {
         return VideoViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: VideoViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item)
+        holder.bind(item, listener)
     }
 
     class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -69,7 +61,7 @@ class VideoRecyclerAdapter(private val listener: NewItem) :
         private val tvLoading: TextView = itemView.findViewById(R.id.tv_loading)
         var videoPreview: MediaItem? = null
 
-        fun bind(data: ItemUrl) {
+        fun bind(data: ItemUrl, listener: ItemListener) {
             // Initialize for ExoplayerRecyclerView
             parent.tag = this
 
@@ -93,6 +85,8 @@ class VideoRecyclerAdapter(private val listener: NewItem) :
                         target: Target<Drawable>?,
                         isFirstResource: Boolean
                     ): Boolean {
+                        listener.onItemLoadFailed(data)
+                        lytProgress.gone()
                         return false
                     }
 

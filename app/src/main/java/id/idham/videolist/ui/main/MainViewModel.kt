@@ -31,7 +31,12 @@ class MainViewModel(private val itemUrlDao: ItemUrlDao) : ViewModel() {
                 itemUrlDao.insert(addedList)
             }
         }
-        clearUrl()
+    }
+
+    fun deletePostedItem(item: ItemUrl) {
+        viewModelScope.launch {
+            itemUrlDao.delete(item)
+        }
     }
 
     fun addMoreUrl(itemUrl: ItemUrl) {

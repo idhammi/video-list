@@ -23,6 +23,10 @@ import id.idham.videolist.utils.*
 
 class VideoRecyclerView : RecyclerView, DownloadTracker.Listener {
 
+    companion object {
+        val TAG = VideoRecyclerView::class.simpleName
+    }
+
     // ui
     private var thumbnail: ImageView? = null
     private var progressBar: ConstraintLayout? = null
@@ -35,6 +39,8 @@ class VideoRecyclerView : RecyclerView, DownloadTracker.Listener {
 
     // vars
     private var isVideoViewAdded = false
+    private var isListScrolled = false
+    private var isListOnTop = true
     private var videoSurfaceDefaultHeight = 0
     private var screenDefaultHeight = 0
     private var playPosition = -1
@@ -74,6 +80,9 @@ class VideoRecyclerView : RecyclerView, DownloadTracker.Listener {
                     if (thumbnail != null) { // show the old thumbnail
                         thumbnail?.visible()
                     }
+
+                    isListScrolled = true
+                    isListOnTop = !recyclerView.canScrollVertically(-1)
 
                     // There's a special case when the end of the list has been reached.
                     // Need to handle that with this bit of logic
@@ -148,6 +157,10 @@ class VideoRecyclerView : RecyclerView, DownloadTracker.Listener {
             ) {
                 DownloadUtil.getDownloadTracker(context).toggleDownloadDialogHelper(item)
             }
+        } else {
+            if (!isListScrolled) {
+                playVideoAtPosition(0)
+            }
         }
     }
 
@@ -168,7 +181,7 @@ class VideoRecyclerView : RecyclerView, DownloadTracker.Listener {
 
         holder.videoPreview?.let {
             playVideoFromCache(it)
-        }
+        } ?: videoPlayer?.stop()
     }
 
     private fun playVideoFromCache(mediaItem: MediaItem) {
@@ -179,6 +192,8 @@ class VideoRecyclerView : RecyclerView, DownloadTracker.Listener {
             videoPlayer?.setMediaSource(videoSource)
             videoPlayer?.prepare()
             videoPlayer?.playWhenReady = true
+        } else {
+            videoPlayer?.stop()
         }
     }
 
@@ -213,7 +228,7 @@ class VideoRecyclerView : RecyclerView, DownloadTracker.Listener {
             targetPosition = adapter!!.itemCount - 1
         }
 
-        Log.d("TAUU", "playVideo: target position: $targetPosition")
+        Log.d(TAG, "playVideo: target position: $targetPosition")
 
         // video is already playing so return
         if (targetPosition == playPosition) {
@@ -311,11 +326,17 @@ class VideoRecyclerView : RecyclerView, DownloadTracker.Listener {
             Download.STATE_QUEUED, Download.STATE_STOPPED -> {
             }
             Download.STATE_COMPLETED -> {
-                for (item in listHolder) {
-                    item.videoPreview?.let { mediaItem ->
+                if (adapter!!.itemCount == 1) {
+                    playVideoAtPosition(0)
+                }
+                for ((index, holder) in listHolder.withIndex()) {
+                    holder.videoPreview?.let { mediaItem ->
                         val uri = mediaItem.playbackProperties?.uri
                         if (download.request.uri == uri) {
-                            item.lytProgress.gone()
+                            holder.lytProgress.gone()
+                            if (isListOnTop && index == listHolder.size - 1) {
+                                playVideoAtPosition(0)
+                            }
                         }
                     }
                 }

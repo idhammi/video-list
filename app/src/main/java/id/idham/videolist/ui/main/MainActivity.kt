@@ -1,16 +1,23 @@
 package id.idham.videolist.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import id.idham.videolist.MyApp
+import id.idham.videolist.data.ItemUrl
 import id.idham.videolist.databinding.ActivityMainBinding
 import id.idham.videolist.ui.addpost.AddPostDialogFragment
-import id.idham.videolist.ui.custom.NewItem
+import id.idham.videolist.ui.custom.ItemListener
 import id.idham.videolist.ui.custom.VideoRecyclerAdapter
 import id.idham.videolist.ui.custom.VideoRecyclerView
+import id.idham.videolist.utils.showToast
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ItemListener {
+
+    companion object {
+        val TAG = MainActivity::class.simpleName
+    }
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var rvFeed: VideoRecyclerView
@@ -23,6 +30,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        setSupportActionBar(binding.toolbar)
         binding.lytMain.lifecycleOwner = this
         binding.lytMain.viewModel = viewModel
 
@@ -44,12 +52,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initVideo() {
         rvFeed = binding.lytMain.rvFeed
-        adapter = VideoRecyclerAdapter(object : NewItem {
-            override fun onNewItemInsert(inserted: Boolean) {
-                if (inserted) rvFeed.scrollToPosition(0)
-            }
-
-        })
+        adapter = VideoRecyclerAdapter(this)
         rvFeed.adapter = adapter
     }
 
@@ -61,6 +64,12 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         if (::rvFeed.isInitialized) rvFeed.releasePlayer()
+    }
+
+    override fun onItemLoadFailed(itemUrl: ItemUrl) {
+        viewModel.deletePostedItem(itemUrl)
+        showToast("Failed to load item")
+        Log.e(TAG, "item failed to load: $itemUrl")
     }
 
 }
