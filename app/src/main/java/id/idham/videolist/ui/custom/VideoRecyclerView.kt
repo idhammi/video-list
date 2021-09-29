@@ -129,12 +129,17 @@ class VideoRecyclerView : RecyclerView, DownloadTracker.Listener {
             return
         }
 
-        // set the position of the list-item that is to be played
         if (!::videoSurfaceView.isInitialized) {
             return
         }
 
         val holder = view.tag as VideoRecyclerAdapter.VideoViewHolder? ?: return
+
+        // item is not a video
+        if (holder.videoPreview == null) {
+            return
+        }
+
         listHolder.add(holder)
 
         thumbnail = holder.imageView
@@ -143,9 +148,7 @@ class VideoRecyclerView : RecyclerView, DownloadTracker.Listener {
         frameLayout = holder.videoContainer
         videoSurfaceView.player = videoPlayer
 
-        holder.videoPreview?.let {
-            downloadVideo(it, holder)
-        }
+        downloadVideo(holder.videoPreview!!, holder)
     }
 
     private fun downloadVideo(media: MediaItem, holder: VideoRecyclerAdapter.VideoViewHolder) {
@@ -173,15 +176,19 @@ class VideoRecyclerView : RecyclerView, DownloadTracker.Listener {
             return
         }
 
+        // item is not a video
+        if (holder.videoPreview == null) {
+            videoPlayer?.stop()
+            return
+        }
+
         thumbnail = holder.imageView
         progressBar = holder.lytProgress
         viewHolderParent = holder.itemView
         frameLayout = holder.videoContainer
         videoSurfaceView.player = videoPlayer
 
-        holder.videoPreview?.let {
-            playVideoFromCache(it)
-        } ?: videoPlayer?.stop()
+        playVideoFromCache(holder.videoPreview!!)
     }
 
     private fun playVideoFromCache(mediaItem: MediaItem) {
@@ -238,7 +245,6 @@ class VideoRecyclerView : RecyclerView, DownloadTracker.Listener {
         // set the position of the list-item that is to be played
         playPosition = targetPosition
 
-        // set the position of the list-item that is to be played
         if (!::videoSurfaceView.isInitialized) {
             return
         }
@@ -289,7 +295,7 @@ class VideoRecyclerView : RecyclerView, DownloadTracker.Listener {
         frameLayout!!.addView(videoSurfaceView)
         isVideoViewAdded = true
         videoSurfaceView.requestFocus()
-        videoSurfaceView.visible()
+        videoSurfaceView.fadeVisibility(View.VISIBLE)
         videoSurfaceView.alpha = 1f
         //thumbnail?.visibility = View.GONE
     }

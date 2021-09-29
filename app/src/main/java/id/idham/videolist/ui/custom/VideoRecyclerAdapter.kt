@@ -58,8 +58,9 @@ class VideoRecyclerAdapter(private val listener: ItemListener) :
         val videoContainer: FrameLayout = itemView.findViewById(R.id.video_container)
         val imageView: ImageView = itemView.findViewById(R.id.video_thumbnail)
         val lytProgress: ConstraintLayout = itemView.findViewById(R.id.lyt_progress)
-        private val tvLoading: TextView = itemView.findViewById(R.id.tv_loading)
         var videoPreview: MediaItem? = null
+        private val tvLoading: TextView = itemView.findViewById(R.id.tv_loading)
+        private var isImageItem = false
 
         fun bind(data: ItemUrl, listener: ItemListener) {
             // Initialize for ExoplayerRecyclerView
@@ -71,11 +72,16 @@ class VideoRecyclerAdapter(private val listener: ItemListener) :
                     .setMimeType(MimeTypes.APPLICATION_MP4)
                     .setMediaMetadata(MediaMetadata.Builder().setTitle(data.url).build())
                     .build()
+                tvLoading.setText(R.string.downloading_video)
+                isImageItem = false
             } else {
+                videoPreview = null
                 tvLoading.setText(R.string.downloading_image)
                 lytProgress.visible()
+                isImageItem = true
             }
 
+            // load image or video thumbnail
             Glide.with(itemView)
                 .load(data.url)
                 .listener(object : RequestListener<Drawable> {
@@ -86,7 +92,7 @@ class VideoRecyclerAdapter(private val listener: ItemListener) :
                         isFirstResource: Boolean
                     ): Boolean {
                         listener.onItemLoadFailed(data)
-                        lytProgress.gone()
+                        if (isImageItem) lytProgress.gone()
                         return false
                     }
 
@@ -97,7 +103,7 @@ class VideoRecyclerAdapter(private val listener: ItemListener) :
                         dataSource: DataSource?,
                         isFirstResource: Boolean
                     ): Boolean {
-                        lytProgress.gone()
+                        if (isImageItem) lytProgress.gone()
                         return false
                     }
                 })

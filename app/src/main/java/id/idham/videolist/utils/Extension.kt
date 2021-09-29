@@ -2,7 +2,11 @@ package id.idham.videolist.utils
 
 import android.content.Context
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
+import androidx.transition.Fade
+import androidx.transition.Transition
+import androidx.transition.TransitionManager
 import com.google.android.exoplayer2.util.MimeTypes
 
 fun View.visible() {
@@ -15,6 +19,14 @@ fun View.gone() {
 
 fun View.invisible() {
     this.visibility = View.INVISIBLE
+}
+
+fun View.fadeVisibility(visibility: Int, duration: Long = 400) {
+    val transition: Transition = Fade()
+    transition.duration = duration
+    transition.addTarget(this)
+    TransitionManager.beginDelayedTransition(this.parent as ViewGroup, transition)
+    this.visibility = visibility
 }
 
 fun String.getMimeType(): String {
